@@ -50,6 +50,10 @@ if [ -n "${PLUGIN_CACHE_TTL:-}" ]; then
     CACHE_TTL="--cache-ttl=${PLUGIN_CACHE_TTL}"
 fi
 
+if [ -n "${PLUGIN_MIRROR:-}" ]; then
+    REGISTRY_MIRROR="--registry-mirror=${PLUGIN_MIRROR}"
+fi
+
 BUILD_ARGS_PROXY=$(echo "HTTP_PROXY,HTTPS_PROXY,FTP_PROXY,NO_PROXY,http_proxy,https_proxy,ftp_proxy,no_proxy" | tr ',' '\n' | while read build_arg; do [[ -n "$(eval "echo \${$build_arg:-}")" ]] && echo "--build-arg ${build_arg}=$(eval "echo \$$build_arg")"; done)
 
 if [ -n "${PLUGIN_BUILD_ARGS:-}" ]; then
@@ -106,6 +110,7 @@ fi
     ${CACHE:-} \
     ${CACHE_TTL:-} \
     ${CACHE_REPO:-} \
+    ${REGISTRY_MIRROR:-} \
     ${TARGET:-} \
     ${BUILD_ARGS_PROXY:-} \
     ${BUILD_ARGS:-} \
