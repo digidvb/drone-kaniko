@@ -73,26 +73,17 @@ fi
 # support format Major.Minor.Release or start with `v`
 # docker tags: Major, Major.Minor, Major.Minor.Release and latest
 if [[ "${PLUGIN_AUTO_TAG:-}" == "true" ]]; then
-    TAG=$(echo "${DRONE_TAG:-}" |sed 's/^v//g')
-    part=$(echo "${TAG}" |tr '.' '\n' |wc -l)
-    # expect number
-    echo ${TAG} |grep -E "[a-z-]" &>/dev/null && isNum=1 || isNum=0
+    TAG="${DRONE_TAG:-}"
 
-    if [ ! -n "${TAG:-}" ];then
-        echo "latest" > .tags
-    elif [ ${isNum} -eq 1 -o ${part} -gt 3 ];then
-        echo "${TAG},latest" > .tags
-    else
-        major=$(echo "${TAG}" |awk -F'.' '{print $1}')
-        minor=$(echo "${TAG}" |awk -F'.' '{print $2}')
-        release=$(echo "${TAG}" |awk -F'.' '{print $3}')
-    
-        major=${major:-0}
-        minor=${minor:-0}
-        release=${release:-0}
-    
-        echo "${major},${major}.${minor},${major}.${minor}.${release},latest" > .tags
-    fi  
+    echo -n "latest" > .tags
+    if [ -n "${TAG:-}" ]; then
+        while true; do
+	    echo -n ",${TAG}" >> .tags
+	    V=${TAG%.*}
+	    [ ${V%.*} = ${TAG} ] && break
+	    TAG=${V}
+        done
+    fi
 fi
 
 if [ -n "${PLUGIN_TAGS:-}" ]; then
