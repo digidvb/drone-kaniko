@@ -59,6 +59,10 @@ if [[ "${PLUGIN_NOPUSH:-}" == "true" ]]; then
     NOPUSH="--no-push"
 fi
 
+if [ -n "${PLUGIN_TARPATH:-}" ]; then
+    TARPATH="--tarPath=${PLUGIN_TARPATH}"
+fi
+
 BUILD_ARGS_PROXY=$(echo "HTTP_PROXY,HTTPS_PROXY,FTP_PROXY,NO_PROXY,http_proxy,https_proxy,ftp_proxy,no_proxy" | tr ',' '\n' | while read build_arg; do [[ -n "$(eval "echo \${$build_arg:-}")" ]] && echo "--build-arg ${build_arg}=$(eval "echo \$$build_arg")"; done)
 
 if [ -n "${PLUGIN_BUILD_ARGS:-}" ]; then
@@ -95,6 +99,7 @@ elif [ -n "${PLUGIN_REPO:-}" ]; then
 else
     DESTINATIONS=""
     NOPUSH="--no-push"
+    TARPATH=""
     # Cache is not valid with --no-push
     CACHE=""
 fi
@@ -109,6 +114,7 @@ fi
     ${CACHE_TTL:-} \
     ${CACHE_REPO:-} \
     ${REGISTRY_MIRROR:-} \
+    ${TARPATH:-} \
     ${TARGET:-} \
     ${BUILD_ARGS_PROXY:-} \
     ${BUILD_ARGS:-} \
