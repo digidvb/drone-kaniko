@@ -29,6 +29,7 @@ DOCKERFILE=${PLUGIN_DOCKERFILE:-Dockerfile}
 CONTEXT=${PLUGIN_CONTEXT:-$PWD}
 LOG=${PLUGIN_LOG:-info}
 EXTRA_OPTS=""
+NOPUSH=""
 
 if [[ -n "${PLUGIN_TARGET:-}" ]]; then
     TARGET="--target=${PLUGIN_TARGET}"
@@ -52,6 +53,10 @@ fi
 
 if [ -n "${PLUGIN_MIRROR:-}" ]; then
     REGISTRY_MIRROR="--registry-mirror=${PLUGIN_MIRROR}"
+fi
+
+if [[ "${PLUGIN_NOPUSH:-}" == "true" ]]; then
+    NOPUSH="--no-push"
 fi
 
 BUILD_ARGS_PROXY=$(echo "HTTP_PROXY,HTTPS_PROXY,FTP_PROXY,NO_PROXY,http_proxy,https_proxy,ftp_proxy,no_proxy" | tr ',' '\n' | while read build_arg; do [[ -n "$(eval "echo \${$build_arg:-}")" ]] && echo "--build-arg ${build_arg}=$(eval "echo \$$build_arg")"; done)
@@ -97,7 +102,8 @@ elif [ -f .tags ]; then
 elif [ -n "${PLUGIN_REPO:-}" ]; then
     DESTINATIONS="--destination=${REGISTRY}/${PLUGIN_REPO}:latest"
 else
-    DESTINATIONS="--no-push"
+    DESTINATIONS=""
+    NOPUSH="--no-push"
     # Cache is not valid with --no-push
     CACHE=""
 fi
@@ -107,6 +113,7 @@ fi
     --dockerfile=${DOCKERFILE} \
     ${EXTRA_OPTS} \
     ${DESTINATIONS} \
+    ${NOPUSH} \
     ${CACHE:-} \
     ${CACHE_TTL:-} \
     ${CACHE_REPO:-} \
