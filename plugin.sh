@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-if [[ -n "${COMMIT_SHA:-}" ]]; then
-    echo "digidvb/drone-kaniko: commit ${COMMIT_SHA}"
+if [[ -n "${DRONE_COMMIT_SHA:-}" ]]; then
+    echo "digidvb/drone-kaniko: commit ${DRONE_COMMIT_SHA}"
 fi
 
 export PATH=$PATH:/kaniko/
