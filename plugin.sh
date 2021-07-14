@@ -2,6 +2,10 @@
 
 set -euo pipefail
 
+if [[ -n "${COMMIT_SHA:-}" ]]; then
+    echo "digidvb/drone-kaniko: commit ${COMMIT_SHA}"
+fi
+
 export PATH=$PATH:/kaniko/
 
 REGISTRY=${PLUGIN_REGISTRY:-index.docker.io}
