@@ -5,9 +5,9 @@ name: default
 steps:
 - name: build
   image: digidvb/drone-kaniko
-  tarpath: image.tar
-  nopush: true
   settings:
+    tarpath: image.tar
+    nopush: true
     repo: digidvb/drone-kaniko
   when:
     event:
@@ -15,10 +15,10 @@ steps:
 
 - name: publish
   image: digidvb/drone-crane
-  auto_tag: true
-  tarpath: image.tar
   settings:
     repo: digidvb/drone-kaniko
+    tarpath: image.tar
+    auto_tag: true
     username:
       from_secret: dockerhub_username
     password:
