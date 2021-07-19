@@ -2,10 +2,6 @@
 
 set -euo pipefail
 
-if [[ -n "${DRONE_COMMIT_SHA:-}" ]]; then
-    echo "digidvb/drone-kaniko: commit ${DRONE_COMMIT_SHA}"
-fi
-
 export PATH=$PATH:/kaniko/
 
 REGISTRY=${PLUGIN_REGISTRY:-index.docker.io}
@@ -33,7 +29,6 @@ DOCKERFILE=${PLUGIN_DOCKERFILE:-Dockerfile}
 CONTEXT=${PLUGIN_CONTEXT:-$PWD}
 LOG=${PLUGIN_LOG:-info}
 EXTRA_OPTS=""
-NOPUSH=""
 
 if [[ -n "${PLUGIN_TARGET:-}" ]]; then
     TARGET="--target=${PLUGIN_TARGET}"
@@ -114,7 +109,7 @@ fi
     --dockerfile=${DOCKERFILE} \
     ${EXTRA_OPTS} \
     ${DESTINATIONS} \
-    ${NOPUSH} \
+    ${NOPUSH:-} \
     ${CACHE:-} \
     ${CACHE_TTL:-} \
     ${CACHE_REPO:-} \
