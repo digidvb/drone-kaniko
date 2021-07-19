@@ -92,6 +92,7 @@ if [[ "${PLUGIN_AUTO_TAG:-}" == "true" ]]; then
 	    TAG=${V}
         done
     fi
+    echo "" >> .tags
 fi
 
 if [ -n "${PLUGIN_TAGS:-}" ]; then
